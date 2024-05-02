@@ -18,6 +18,7 @@ from utils.utils_dist import get_dist_info, init_dist
 
 from data.select_dataset import define_Dataset
 from models.select_model import define_Model
+import datetime
 
 
 '''
@@ -173,6 +174,7 @@ def main(json_path='options/train_msrresnet_psnr.json'):
             train_sampler.set_epoch(epoch)
 
         for i, train_data in enumerate(train_loader):
+            print('STEP:', current_step, datetime.datetime.now())
 
             current_step += 1
 
