@@ -2,7 +2,8 @@
   "task": "swin2sr_color_car_jpeg_40"     // JPEG compression artifact reduction for quality factor 10/20/30/40. root/task/images-models-options
   , "model": "plain" // "plain" | "plain2" if two inputs
   , "gpu_ids": [0]
-  , "dist": true
+  , "use_tpu": true // false by default to use CUDA
+  , "dist": false // set to false if use_tpu is true
 
   , "is_color": true // color or grayscale
   , "n_channels": 3

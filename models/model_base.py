@@ -3,13 +3,17 @@ import torch
 import torch.nn as nn
 from utils.utils_bnorm import merge_bn, tidy_sequential
 from torch.nn.parallel import DataParallel, DistributedDataParallel
+import torch_xla.core.xla_model as xm
 
 
 class ModelBase():
     def __init__(self, opt):
         self.opt = opt                         # opt
         self.save_dir = opt['path']['models']  # save models
-        self.device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
+        if opt['use_tpu']:
+            self.device = xm.xla_device()
+        else:
+            self.device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
         self.is_train = opt['is_train']        # training or not
         self.schedulers = []                   # schedulers
 
@@ -153,7 +157,10 @@ class ModelBase():
         state_dict = network.state_dict()
         for key, param in state_dict.items():
             state_dict[key] = param.cpu()
-        torch.save(state_dict, save_path)
+        if self.opt['use_tpu']:
+            xm.save(state_dict, save_path)
+        else:
+            torch.save(state_dict, save_path)
 
     # ----------------------------------------
     # load the state_dict of the network
@@ -181,7 +188,10 @@ class ModelBase():
     def save_optimizer(self, save_dir, optimizer, optimizer_label, iter_label):
         save_filename = '{}_{}.pth'.format(iter_label, optimizer_label)
         save_path = os.path.join(save_dir, save_filename)
-        torch.save(optimizer.state_dict(), save_path)
+        if self.opt['use_tpu']:
+            xm.save(optimizer.state_dict(), save_path)
+        else:
+            torch.save(optimizer.state_dict(), save_path)
 
     # ----------------------------------------
     # load the state_dict of the optimizer

@@ -1,6 +1,7 @@
 import functools
 import torch
 from torch.nn import init
+import torch_xla.core.xla_model as xm
 
 
 """
@@ -355,7 +356,10 @@ def define_D(opt):
 # VGGfeature, netF, F
 # --------------------------------------------
 def define_F(opt, use_bn=False):
-    device = torch.device('cuda' if opt['gpu_ids'] else 'cpu')
+    if opt['use_tpu']:
+        device = device = xm.xla_device()
+    else:
+        device = torch.device('cuda' if opt['gpu_ids'] else 'cpu')
     from models.network_feature import VGGFeatureExtractor
     # pytorch pretrained VGG19-54, before ReLU.
     if use_bn:

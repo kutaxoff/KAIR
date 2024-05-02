@@ -9,6 +9,7 @@ import logging
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 import torch
+import torch_xla.core.xla_model as xm
 
 from utils import utils_logger
 from utils import utils_image as util
@@ -102,8 +103,11 @@ def main(json_path='options/train_msrresnet_psnr.json'):
     print('Random seed: {}'.format(seed))
     random.seed(seed)
     np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
+    if opt['use_tpu']:
+        xm.set_rng_seed(seed)
+    else:
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
 
     '''
     # ----------------------------------------
