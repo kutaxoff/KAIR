@@ -108,7 +108,7 @@ def main(json_path='options/train_msrresnet_psnr.json'):
     random.seed(seed)
     np.random.seed(seed)
     if opt['use_tpu']:
-        xm.set_rng_seed(seed)
+        xm.set_rng_state(seed)
     else:
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
