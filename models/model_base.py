@@ -3,7 +3,10 @@ import torch
 import torch.nn as nn
 from utils.utils_bnorm import merge_bn, tidy_sequential
 from torch.nn.parallel import DataParallel, DistributedDataParallel
-import torch_xla.core.xla_model as xm
+try:
+    import torch_xla.core.xla_model as xm
+except:
+    pass
 
 
 class ModelBase():

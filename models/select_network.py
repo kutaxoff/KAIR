@@ -1,7 +1,10 @@
 import functools
 import torch
 from torch.nn import init
-import torch_xla.core.xla_model as xm
+try:
+    import torch_xla.core.xla_model as xm
+except:
+    pass
 
 
 """

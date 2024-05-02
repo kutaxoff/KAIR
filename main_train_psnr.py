@@ -9,7 +9,10 @@ import logging
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 import torch
-import torch_xla.core.xla_model as xm
+try:
+    import torch_xla.core.xla_model as xm
+except:
+    pass
 
 from utils import utils_logger
 from utils import utils_image as util
